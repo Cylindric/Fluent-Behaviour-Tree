@@ -82,7 +82,7 @@ namespace FluentBehaviourTree
         }
 
         /// <summary>
-        /// Create a sequence node.
+        /// Create a sequence node.  Runs each child node in sequence. Fails for the first child node that fails. Moves to the next child when the current running child succeeds. Stays on the current child node while it returns running. Succeeds when all child nodes have succeeded.
         /// </summary>
         public BehaviourTreeBuilder Sequence(string name = "Sequence")
         {
@@ -98,7 +98,7 @@ namespace FluentBehaviourTree
         }
 
         /// <summary>
-        /// Create a parallel node.
+        /// Create a parallel node. Runs all child nodes in parallel. Continues to run until a required number of child nodes have either failed or succeeded.
         /// </summary>
         public BehaviourTreeBuilder Parallel(int numRequiredToFail, int numRequiredToSucceed)
         {
@@ -130,7 +130,7 @@ namespace FluentBehaviourTree
         }
 
         /// <summary>
-        /// Create a selector node.
+        /// Create a selector node. Runs child nodes in sequence until it finds one that succeeds. Succeeds when it finds the first child that succeeds. For child nodes that fail it moves forward to the next child node. While a child is running it stays on that child node without moving forward.
         /// </summary>
         public BehaviourTreeBuilder Selector(string name = "Selector")
         {
@@ -146,7 +146,7 @@ namespace FluentBehaviourTree
         }
 
         /// <summary>
-        /// Create a Repeater node.
+        /// Create a Repeater node. Repeat child node for infinity regardless of its result.
         /// </summary>
         public BehaviourTreeBuilder Repeater(string name = "Repeater")
         {
