@@ -36,6 +36,14 @@ namespace FluentBehaviourTree
         /// <summary>
         /// Like an action node... but the function can return true/false and is mapped to success/failure.
         /// </summary>
+        public BehaviourTreeBuilder Condition(Func<TimeData, bool> fn)
+        {
+            return Do("Condition", t => fn(t) ? BehaviourTreeStatus.Success : BehaviourTreeStatus.Failure);
+        }
+
+        /// <summary>
+        /// Like an action node... but the function can return true/false and is mapped to success/failure.
+        /// </summary>
         public BehaviourTreeBuilder Condition(string name, Func<TimeData, bool> fn)
         {
             return Do(name, t => fn(t) ? BehaviourTreeStatus.Success : BehaviourTreeStatus.Failure);
@@ -44,7 +52,7 @@ namespace FluentBehaviourTree
         /// <summary>
         /// Create an inverter node that inverts the success/failure of its children.
         /// </summary>
-        public BehaviourTreeBuilder Inverter(string name)
+        public BehaviourTreeBuilder Inverter(string name = "Inverter")
         {
             var inverterNode = new InverterNode(name);
 
@@ -60,7 +68,7 @@ namespace FluentBehaviourTree
         /// <summary>
         /// Create an succeeder node that always returns success.
         /// </summary>
-        public BehaviourTreeBuilder Succeeder(string name)
+        public BehaviourTreeBuilder Succeeder(string name = "Succeeder")
         {
             var succeederNode = new SucceederNode(name);
 
@@ -76,7 +84,7 @@ namespace FluentBehaviourTree
         /// <summary>
         /// Create a sequence node.
         /// </summary>
-        public BehaviourTreeBuilder Sequence(string name)
+        public BehaviourTreeBuilder Sequence(string name = "Sequence")
         {
             var sequenceNode = new SequenceNode(name);
 
@@ -86,6 +94,22 @@ namespace FluentBehaviourTree
             }
 
             parentNodeStack.Push(sequenceNode);
+            return this;
+        }
+
+        /// <summary>
+        /// Create a parallel node.
+        /// </summary>
+        public BehaviourTreeBuilder Parallel(int numRequiredToFail, int numRequiredToSucceed)
+        {
+            var parallelNode = new ParallelNode("Parallel", numRequiredToFail, numRequiredToSucceed);
+
+            if (parentNodeStack.Count > 0)
+            {
+                parentNodeStack.Peek().AddChild(parallelNode);
+            }
+
+            parentNodeStack.Push(parallelNode);
             return this;
         }
 
@@ -108,7 +132,7 @@ namespace FluentBehaviourTree
         /// <summary>
         /// Create a selector node.
         /// </summary>
-        public BehaviourTreeBuilder Selector(string name)
+        public BehaviourTreeBuilder Selector(string name = "Selector")
         {
             var selectorNode = new SelectorNode(name);
 
@@ -124,7 +148,7 @@ namespace FluentBehaviourTree
         /// <summary>
         /// Create a Repeater node.
         /// </summary>
-        public BehaviourTreeBuilder Repeater(string name)
+        public BehaviourTreeBuilder Repeater(string name = "Repeater")
         {
             var repeaterNode = new RepeaterNode(name);
 
@@ -156,7 +180,7 @@ namespace FluentBehaviourTree
         /// <summary>
         /// Create a Repeat until fail node.
         /// </summary>
-        public BehaviourTreeBuilder RepeatUntilFail(string name)
+        public BehaviourTreeBuilder RepeatUntilFail(string name ="RepeatUntilFail")
         {
             var repeatUntilFailNode = new RepeatUntilFailNode(name);
 
